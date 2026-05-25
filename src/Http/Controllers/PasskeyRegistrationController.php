@@ -76,6 +76,7 @@ class PasskeyRegistrationController extends Controller
             throw new RuntimeException('User model must implement the PasskeyUser contract.');
         }
 
+        // TODO F8/F9 — use ->authenticatable() once guard wiring lands
         abort_unless($passkey->user_id === $user->getKey(), 403);
 
         $deletePasskey($user, $passkey);

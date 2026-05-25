@@ -209,6 +209,7 @@ class Passkeys
             return true;
         }
 
+        // TODO F8/F9 — use ->authenticatable() once guard wiring lands
         return (bool) (self::$authorizeLoginUsing)($request, $passkey->user, $passkey);
     }
 

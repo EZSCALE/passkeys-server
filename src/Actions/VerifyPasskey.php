@@ -41,6 +41,7 @@ class VerifyPasskey
 
             $this->updatePasskey($passkey, $source);
 
+            // TODO F8/F9 — use ->authenticatable() once guard wiring lands
             PasskeyVerified::dispatch($passkey->user, $passkey);
 
             return $passkey;
@@ -95,6 +96,7 @@ class VerifyPasskey
 
         $identifier = $user->getKey();
 
+        // TODO F8/F9 — use ->authenticatable() once guard wiring lands
         if (! is_scalar($identifier) || (string) $passkey->user_id !== (string) $identifier) {
             throw InvalidPasskeyException::make('Passkey not recognized. It may have been removed from your account.');
         }

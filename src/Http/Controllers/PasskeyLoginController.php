@@ -59,6 +59,7 @@ class PasskeyLoginController extends Controller
             throw InvalidPasskeyException::make('Unable to sign in with this account.');
         }
 
+        // TODO F8/F9 — use ->authenticatable() once guard wiring lands
         $guard->login($passkey->user, $request->remember());
 
         $request->session()->regenerate();
