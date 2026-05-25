@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Laravel\Passkeys\Tests\Stubs;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passkeys\Contracts\PasskeyUser;
 use Laravel\Passkeys\PasskeyAuthenticatable;
 
-class AdminStubUser extends Model implements PasskeyUser
+class AdminStubUser extends Authenticatable implements PasskeyUser
 {
     use PasskeyAuthenticatable;
 
