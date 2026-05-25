@@ -45,4 +45,13 @@ interface PasskeyUser extends Authenticatable
      * Get the username for WebAuthn registration.
      */
     public function getPasskeyUsername(): string;
+
+    /**
+     * Get the auth guard this user belongs to.
+     *
+     * Used by the multi-guard resolver to pick the correct
+     * user_model, DB connection, and post-login redirect from
+     * config('passkeys.guards.{name}').
+     */
+    public function getPasskeyGuard(): string;
 }

@@ -75,4 +75,17 @@ trait PasskeyAuthenticatable
         return $this->getAttribute('email')
             ?? (string) $this->getAuthIdentifier();
     }
+
+    /**
+     * Get the auth guard this user belongs to.
+     *
+     * Default implementation returns the application's default
+     * guard, preserving single-guard backwards compatibility.
+     * Override in the user model when participating in the
+     * multi-guard resolver (see config('passkeys.guards.{name}')).
+     */
+    public function getPasskeyGuard(): string
+    {
+        return Config::string('auth.defaults.guard');
+    }
 }
