@@ -142,6 +142,53 @@ class Passkeys
     }
 
     /**
+     * Resolve the user model class for a given auth guard.
+     *
+     * @throws \RuntimeException when no per-guard config exists for $guard
+     * @return class-string<Contracts\PasskeyUser>
+     */
+    public static function userModelFor(string $guard): string
+    {
+        $guards = Config::array('passkeys.guards', []);
+        $model = $guards[$guard]['user_model'] ?? null;
+
+        if ($model === null) {
+            throw new RuntimeException("No passkeys configuration for guard '{$guard}'");
+        }
+
+        return $model;
+    }
+
+    /**
+     * Resolve the DB connection name for a given auth guard, or null
+     * to use the application's default connection.
+     */
+    public static function tableConnectionFor(string $guard): ?string
+    {
+        $guards = Config::array('passkeys.guards', []);
+        if (! isset($guards[$guard])) {
+            throw new RuntimeException("No passkeys configuration for guard '{$guard}'");
+        }
+
+        return $guards[$guard]['connection'] ?? null;
+    }
+
+    /**
+     * Resolve the post-login redirect path for a given auth guard.
+     */
+    public static function redirectFor(string $guard): string
+    {
+        $guards = Config::array('passkeys.guards', []);
+        $redirect = $guards[$guard]['redirect'] ?? null;
+
+        if ($redirect === null) {
+            throw new RuntimeException("No passkeys configuration for guard '{$guard}'");
+        }
+
+        return $redirect;
+    }
+
+    /**
      * Register a callback to authorize passkey logins before login.
      *
      * @param  (callable(Request, Contracts\PasskeyUser, Passkey): bool)|null  $callback
