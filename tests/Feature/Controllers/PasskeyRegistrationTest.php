@@ -191,7 +191,7 @@ it('deletes a passkey for the authenticated user', function (): void {
         ->assertJson(['status' => 'passkey-deleted']);
 
     expect(Passkey::find($passkey->id))->toBeNull();
-})->skip('TODO F8/F9: DeletePasskey policy/controller still authorizes via user_id ownership check; needs polymorphic owner check.');
+})->skip('TODO F9: DeletePasskey policy/controller still authorizes via user_id ownership check; needs polymorphic owner check.');
 
 it('resolves passkey route bindings with the configured passkey model', function (): void {
     Passkeys::usePasskeyModel(CustomRouteKeyPasskey::class);
@@ -214,7 +214,7 @@ it('resolves passkey route bindings with the configured passkey model', function
         ->assertJson(['status' => 'passkey-deleted']);
 
     expect(CustomRouteKeyPasskey::find($passkey->id))->toBeNull();
-})->skip('TODO F8/F9: DeletePasskey policy/controller still authorizes via user_id ownership check; needs polymorphic owner check.');
+})->skip('TODO F9: DeletePasskey policy/controller still authorizes via user_id ownership check; needs polymorphic owner check.');
 
 it('resolves passkey route bindings when package routes are ignored', function (): void {
     Passkeys::ignoreRoutes();

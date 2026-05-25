@@ -64,4 +64,4 @@ it('logs in when custom sign-in authorization callback returns true', function (
         ->assertJsonMissing(['verified']);
 
     $this->assertAuthenticatedAs($user);
-})->skip('TODO F8/F9: PasskeyLoginController still loads user via user_id query path; needs morphTo + guard-aware resolver.');
+})->skip('TODO F9: PasskeyLoginController still loads user via user_id query path; needs morphTo + guard-aware resolver.');
