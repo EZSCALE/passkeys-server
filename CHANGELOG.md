@@ -15,6 +15,21 @@ Configuration shape changes from a single `passkeys.guard` to a
 
 Maintained by [EZSCALE](https://github.com/EZSCALE) (Prophet731).
 
+### 0.3.0-ezscale.1 — 2026-05-25
+
+First multi-guard release. Forked from `laravel/passkeys-server@0.2.1`.
+
+- `Passkeys::userModelFor($guard)`, `tableConnectionFor($guard)`, `redirectFor($guard)` static resolvers
+- `Route::passkeys($guard, $opts)` macro for per-guard route registration
+- Polymorphic `passkeys` schema via additive `make_passkeys_polymorphic` migration
+- `PasskeyUser::getPasskeyGuard()` contract method (default impl in `PasskeyAuthenticatable` trait for single-guard back-compat)
+- `PasskeyAuthenticatable` trait uses `morphMany`
+- 5 actions accept `string $guard` parameter
+- 5 controllers read `passkey_guard` from route defaults
+- 123 tests / 285 assertions all green
+
+No changes to upstream's wire format — the `@laravel/passkeys` TS client works unmodified.
+
 ## v0.2.1 - 2026-05-18
 
 ### What's Changed
