@@ -39,6 +39,59 @@ class PasskeysServiceProvider extends ServiceProvider
         $this->registerPublishing();
         $this->registerRoutes();
         $this->registerRouteBindings();
+        $this->registerRouteMacro();
+    }
+
+    /**
+     * Register the Route::passkeys($guard, $opts) macro for per-guard route registration.
+     */
+    protected function registerRouteMacro(): void
+    {
+        Route::macro('passkeys', function (string $guard, array $opts = []) {
+            $prefix = $opts['prefix'] ?? '/passkeys';
+            $middleware = $opts['middleware']
+                ?? config("passkeys.guards.{$guard}.middleware", ['web']);
+            $managementMiddleware = $opts['management_middleware']
+                ?? config("passkeys.guards.{$guard}.management_middleware", ['password.confirm']);
+
+            Route::prefix($prefix)
+                ->middleware($middleware)
+                ->group(function () use ($guard, $managementMiddleware): void {
+                    // Authentication (login) — no management middleware
+                    Route::post('login/options', [
+                        \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::class,
+                        'index',
+                    ])->name("passkeys.{$guard}.login.options")
+                        ->defaults('passkey_guard', $guard);
+
+                    Route::post('login', [
+                        \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::class,
+                        'store',
+                    ])->name("passkeys.{$guard}.login")
+                        ->defaults('passkey_guard', $guard);
+
+                    // Registration + management — gated by management middleware
+                    Route::middleware($managementMiddleware)->group(function () use ($guard): void {
+                        Route::post('register/options', [
+                            \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class,
+                            'index',
+                        ])->name("passkeys.{$guard}.register.options")
+                            ->defaults('passkey_guard', $guard);
+
+                        Route::post('register', [
+                            \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class,
+                            'store',
+                        ])->name("passkeys.{$guard}.register")
+                            ->defaults('passkey_guard', $guard);
+
+                        Route::delete('{passkey}', [
+                            \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::class,
+                            'destroy',
+                        ])->name("passkeys.{$guard}.destroy")
+                            ->defaults('passkey_guard', $guard);
+                    });
+                });
+        });
     }
 
     /**
