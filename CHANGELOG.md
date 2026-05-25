@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## EZSCALE Fork — Multi-Guard Support
+
+This fork of `laravel/passkeys-server` adds multi-guard support for Laravel
+applications that authenticate multiple user populations (e.g. an `admin`
+guard alongside the default `web` guard). The fork preserves upstream's
+wire format so the official `@laravel/passkeys` TypeScript client works
+unmodified.
+
+Configuration shape changes from a single `passkeys.guard` to a
+`passkeys.guards.{name}` block. See `config/passkeys.php` for the new shape.
+
+Maintained by [EZSCALE](https://github.com/EZSCALE) (Prophet731).
+
 ## v0.2.1 - 2026-05-18
 
 ### What's Changed
