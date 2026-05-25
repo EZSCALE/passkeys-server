@@ -36,7 +36,12 @@ class Passkeys
     /**
      * Callback to determine if a passkey-verified user should be logged in.
      *
-     * @var (Closure(Request, Contracts\PasskeyUser, Passkey): bool)|null
+     * The callback receives the request, the authenticatable owner of the
+     * passkey, the passkey itself, and the resolved guard name. The guard
+     * argument lets multi-guard installs apply guard-specific authorization
+     * (e.g. allow admins only from a trusted IP range).
+     *
+     * @var (Closure(Request, Contracts\PasskeyUser, Passkey, string): bool)|null
      */
     private static ?Closure $authorizeLoginUsing = null;
 
@@ -191,7 +196,7 @@ class Passkeys
     /**
      * Register a callback to authorize passkey logins before login.
      *
-     * @param  (callable(Request, Contracts\PasskeyUser, Passkey): bool)|null  $callback
+     * @param  (callable(Request, Contracts\PasskeyUser, Passkey, string): bool)|null  $callback
      */
     public static function authorizeLoginUsing(?callable $callback): void
     {
@@ -202,15 +207,17 @@ class Passkeys
 
     /**
      * Determine if a passkey-verified user should be allowed to log in.
+     *
+     * The $guard argument is the auth guard name resolved from the matched
+     * route's 'passkey_guard' default, allowing per-guard authorization.
      */
-    public static function allowsLogin(Request $request, Passkey $passkey): bool
+    public static function allowsLogin(Request $request, Passkey $passkey, string $guard = 'web'): bool
     {
         if (! self::$authorizeLoginUsing instanceof Closure) {
             return true;
         }
 
-        // TODO F8/F9 — use ->authenticatable() once guard wiring lands
-        return (bool) (self::$authorizeLoginUsing)($request, $passkey->user, $passkey);
+        return (bool) (self::$authorizeLoginUsing)($request, $passkey->authenticatable, $passkey, $guard);
     }
 
     /**
